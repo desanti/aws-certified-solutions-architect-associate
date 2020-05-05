@@ -1,0 +1,172 @@
+
+
+# Elastic Load Balancers
+
+It is a phisical or virtual device to load balance the network
+
+## Types:
+
+  - Application Load Balancer: 
+  	- HTTP/HTTPS traffic.
+  	- Operation at layer 7 and are application-aware. 
+  	- Example, send requests to web server per country.
+  - Network Load Balancer: 
+  	- TCP traffic. 
+  	- Operation at the connection level (layer 4).
+  	- Extreme performance.
+  - Classic Load Balancer
+  	- Legacy Elastic Load Balancers.
+  	- HTTP/HTTPS trafic. Layer 7-specific features (X-Forwarded and sticky sessions - rever o contexto de stick sessions)
+  	- TCP traffic. Layer 4
+  	- 504 error (gateway timeout): application not responding within the idle timeout period (Web server layer or Database Layer).
+  	- If you need the IPv4 adderes of your end user, looock for the X-Forwarded-For header.
+
+ ## Health Check
+
+
+## TIPS
+ - application load balancer: intelligent routing
+ - network load balancer: performance
+ - classic load balancer: keep you costs down, don't need any intelligence routing.
+ - instances monitored by ELB are reported as InService / OutofService
+ - Helf checks check the instance heath by taking to it.
+ - Load Balancers have their own DNS name. you are never given an IP address.
+ - Read FAQ for Classic Load Balancers (~10 questions in exam)
+
+
+
+## ADVANCED LOAD BALANCE
+
+### STICK SESSION
+
+  - Send all requests from the user during the session are sent to the same instance.
+  - Can configue Stick Session for Application Load Balance, but traffic will be sent at the Target Group Level.
+  
+### Cross Zone Load Balancing (With and No)
+  - Configure Route 53 to send 50/50 percent traffic to zone, and then use Load Balance.
+
+
+  - Common Exam Scenario
+    - Route 53 send 100% traffic to Zone A, Load Balance configure to traffic to Zone A EC2. Configure Cross Zone to traffic requests to Zone B EC2.
+
+
+### Path Patterns
+  - Rules to foward requests based on the URL path.
+  	- Use on microservices
+
+  - Common Exam Scenario
+    - Route 53 send 100% traffic to Zone A, Load balance configure to traffic to Zone A EC2 with path pattern (mysite.com). Configure path pattern to send traffic from mysite.com/images/ to Zone B EC2 (need configure Cross Zone?)
+
+
+### TIPs:
+
+  - Stick Session enable your users to stick to the same EC2 instance. Can be usefull if you are storeing information locally to that instance.
+  - Cross Zone Load Balance enables you to load balance across zone.
+  - Path patterns allow you to direct traffic to different EC2 instance based on the URL contained in the request.
+
+
+
+
+
+
+
+ [ADICIONAR UMA IMAGEM DO OSI LAYER]
+
+ -PROTOCOLOS
+
+  - Layer 7 (Application Layer): HTTP/HTTPS, FTP, SSH, POP3, SMTP, IMAP, SNMP, DNS, PING
+  - Layer 4 (Transport Layer): TCP, UDP, RTP..
+  - Layer 3 (Network Layer): IPv4, IPv6
+
+
+
+# AUTO SCALING
+
+three to four question in exams
+
+  - three components:
+    - Groups: Logical component. Webserver, application or database group, etc.
+    - Configuration Templates: groups use a launch template or a launch configuration. AMI ID, instance types, securit groups...
+    - Scalling Options: rules to scale groups. 
+    	- maintain current instance levels at all times
+    	  - example, 10 EC2 when one unhealth, the scaling to 10 EC2 up
+    	- scale manually
+    	  - configure number of resource, when change configuration, auto scalling create or terminate instance.
+    	- scale based on a schedule
+    	  - scale by schedule using a function of datetime. Example, scale up 10 EC2 on 6:00 AM, and scale down 2 EC2 instance on 10:00 PM. 
+    	- scale based on demand
+    	  - scale using polices. Parameters to control the scaling process. Example, scale up a new EC2 instance when 50% CPU utilization.
+    	  - most popular.
+    	- use predictive scaling
+    	  - NEW option
+    	  - combination with EC2 Auto Scaling and Auto Scaling.
+    	  - predictive and dynamic scaling (proactive and reactive aprroaches)
+
+    	- Can configure Classic Load Balance
+    	- Multiple Zone
+    	- Delete Auto Scale Groups, delete de EC2 instances.
+
+
+    	- launch configurations: configure launch configurations: AMI ID, bootstrap script, IP address type, security groups, etc..
+    	- auto scaling groups: group size (number of instances), load balancing, heath checks. Scaling between 3 of 6 instances, average CPU utilization, target value (80% cpu), 60 seconds to scaling.
+
+    - healthy checks can be load balance or EC2
+
+
+# HA ARCHITECTURE
+
+  - Netflix Simian Army project, inject failure into the production systems.
+
+  - TIPS:
+    - Always design for failure.
+    - Use Multiple AZ's and Multiple Regions where ever you can
+    - Know the difference between Multi-AZ and Read Replicas for RDS
+    - Know the difference between scaling out and scaling up
+    - Read the question carefully and always consider the cost element.
+    - Know the different S3 storage classes
+
+
+
+# CLOUD FORMATION
+  - template json
+
+  - template types:
+    - Sample template
+    - upload template to S3
+    - specify an amazon S3 template URL
+
+
+  - TIPS:
+    - is a way of completely scriptiong your cloud environment
+    - Quick Start = crate complex enviromnents very quickly
+
+
+# ELASTIC BEANSTALK
+
+  - Quickly deploy and manage applications. You simply upload your application, and Elastic Beanstalk automatically handles the etais of capacity provisioning, load balancing, scaling and application health monitoring.
+  - it will grow out your infrastucture
+
+
+
+# summary
+
+  - Load balancer
+    - Application Load Balancers: more inteligent
+    - Network load balancer: extreme performance
+    - Classic load balance: dont intelligent rooting, keep your costs down
+    - 504 error gateway has timed out 
+    - troubleshoot the application or database layer
+    - if you need the IPv4 adress of your end user, look for the X-Forwarded-For header
+    - Instance monitored by ELB are reported as InServer or OutofService
+	- Health checks check the instance health by talking to it
+	- Load balancers have their own DNS name. You are never given an IP address
+	- Read he ELB FAQ for Classic Load Balancers
+	- ~10 questions
+	
+  - Stick Sessions enable your users to stick to the same EC2 instance.
+  - Cross Zone Load Balancing, multiple availability zone.
+  - Path Patterns: redirect traffic to different EC2 instance based on the URL contained in the request
+
+  - Cloud Formation is a way more powerfull than Elastic Beanstalk
+
+
